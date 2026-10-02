@@ -1,20 +1,24 @@
 class Solution {
 public:
-    vector<string> ans;
-    void solve(string s, int open, int close, int n) {
-        if (s.length() == 2 * n) {
-            ans.push_back(s);
-            return;
-        }
-        if (open < n) {
-            solve(s + "(", open + 1, close, n);
-        }
-        if (close < open) {
-            solve(s + ")", open, close + 1, n);
-        }
-    }
     vector<string> generateParenthesis(int n) {
-        solve("", 0, 0, n);
-        return ans;
+        if (n-- == 1) return {"()"};
+
+        vector<string> res;
+        auto dfs = [&](auto& self, int O, int C, string s) -> void {
+            if (O == 0 && C == 0) {
+                res.push_back(s + ")");
+                return;
+            }
+
+            if (O > 0)
+                self(self, O - 1, C, s + "(");
+
+            if (C >= O)
+                self(self, O, C - 1, s + ")");
+        };
+
+        dfs(dfs, n, n, "(");
+
+        return res;
     }
 };
